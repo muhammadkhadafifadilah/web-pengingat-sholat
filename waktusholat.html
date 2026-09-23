@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🕌 Waktunya Kita Sholat</title>
+
+<style>
+
+body{
+
+font-family:Arial,sans-serif;
+
+background:
+linear-gradient(
+rgba(0,0,0,0.55),
+rgba(0,0,0,0.7)
+),
+
+url('https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1400&auto=format&fit=crop');
+background-size:cover;
+background-position:center top;
+background-repeat:no-repeat;
+background-attachment:fixed;
+
+color:white;
+margin:0;
+padding:15px;
+
+overflow-x:hidden;
+
+}
+
+body::before{
+
+content:"";
+
+position:fixed;
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background-image:
+
+radial-gradient(
+white 1px,
+transparent 1px
+),
+
+radial-gradient(
+white 1px,
+transparent 1px
+);
+
+background-size:
+120px 120px,
+180px 180px;
+
+opacity:0.25;
+
+pointer-events:none;
+
+z-index:-1;
+
+}
+
+.container{
+
+max-width:520px;
+margin:auto;
+
+background:
+rgba(0,0,0,0.45);
+
+backdrop-filter:blur(10px);
+
+padding:20px;
+
+border-radius:20px;
+
+border:
+1px solid rgba(255,255,255,0.1);
+
+}
+
+h1,
+.subtitle{
+
+text-align:center;
+
+}
+
+.subtitle{
+
+color:#dbeafe;
+
+}
+
+.card{
+
+background:
+rgba(255,255,255,0.08);
+
+padding:15px;
+
+border-radius:15px;
+
+margin-top:15px;
+
+}
+
+button{
+
+border:none;
+
+border-radius:12px;
+
+padding:12px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+.menu-flex{
+
+display:flex;
+
+gap:10px;
+
+flex-wrap:wrap;
+
+justify-content:center;
+
+}
+
+.menu-flex button{
+
+background:white;
+color:#111827;
+
+}
+
+.countdown{
+
+text-align:center;
+
+font-size:22px;
+
+font-weight:bold;
+
+color:#fde68a;
+
+margin:20px 0;
+
+}
+
+.waktu{
+
+display:flex;
+
+justify-content:space-between;
+
+padding:12px 0;
+
+border-bottom:
+1px solid rgba(255,255,255,0.1);
+
+}
+
+.absen-btn{
+
+width:100%;
+
+background:#16a34a;
+color:white;
+
+}
+
+.lokasi-btn{
+
+background:#2563eb !important;
+color:white !important;
+
+}
+
+.red-btn{
+
+width:100%;
+
+background:#db2777;
+color:white;
+
+}
+
+.puasa-item{
+
+background:
+rgba(255,255,255,0.08);
+
+padding:12px;
+
+border-radius:12px;
+
+margin-bottom:12px;
+
+}
+
+#setting-btn{
+
+position:fixed;
+
+top:15px;
+right:15px;
+
+width:45px;
+height:45px;
+
+border-radius:50%;
+
+background:
+rgba(0,0,0,0.4);
+
+color:white;
+
+font-size:20px;
+
+z-index:999;
+
+}
+
+#setting-menu{
+
+position:fixed;
+
+top:70px;
+right:15px;
+
+display:none;
+
+flex-direction:column;
+
+gap:10px;
+
+background:
+rgba(0,0,0,0.5);
+
+padding:10px;
+
+border-radius:15px;
+
+width:200px;
+
+z-index:999;
+
+}
+
+#setting-menu button{
+
+background:white;
+color:#111827;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<button id="setting-btn"
+onclick="toggleSettingMenu()">
+
+⚙️
+
+</button>
+
+<div id="setting-menu">
+
+<button onclick="aturNomorGuru()">
+📱 Nomor Guru
+</button>
+
+<button onclick="toggleNotifications()">
+🛎️ Notifikasi
+</button>
+
+<button onclick="toggleKotaList()">
+📍 Ganti Lokasi
+</button>
+
+<div id="kota-list"
+style="
+display:none;
+flex-direction:column;
+gap:8px;
+margin-top:10px;
+">
+
+<button onclick="gantiKota('Jakarta')">
+Jakarta
+</button>
+
+<button onclick="gantiKota('Tangerang')">
+Tangerang
+</button>
+
+<button onclick="gantiKota('Tangerang Selatan')">
+Tangerang Selatan
+</button>
+
+<button onclick="gantiKota('Bandung')">
+Bandung
+</button>
+
+<button onclick="gantiKota('Surabaya')">
+Surabaya
+</button>
+
+</div>
+
+</div>
+
+<div class="container">
+
+<h1>🕌 Waktunya Kita Sholat</h1>
+
+<p class="subtitle">
+Jadwal Sholat & Ibadah Realtime
+</p>
+
+<p id="salam"
+style="text-align:center;">
+</p>
+
+<div class="card"
+id="gender-card">
+
+<h3 style="text-align:center;">
+Pilih Gender
+</h3>
+
+<div class="menu-flex">
+
+<button onclick="setGender('cowok')">
+👦 Cowok
+</button>
+
+<button onclick="setGender('cewek')">
+👧 Cewek
+</button>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="menu-flex">
+
+<button onclick="showMenu('sholat')">
+🕌 Sholat
+</button>
+
+<button onclick="showMenu('puasa')">
+🌙 Puasa
+</button>
+
+<button onclick="showMenu('riwayat')">
+📜 Riwayat
+</button>
+
+</div>
+
+</div>
+
+<div id="menu-sholat">
+
+<div class="countdown"
+id="countdown">
+
+Mengambil jadwal realtime...
+
+</div>
+
+<div class="card">
+
+⭐ Total Poin:
+<span id="total-poin">
+0
+</span>
+
+</div>
+
+<div class="card">
+
+<h2>
+🕌 Jadwal Sholat
+</h2>
+
+<p id="kota-title">
+Tangerang Selatan
+</p>
+
+<div id="jadwal-list"></div>
+
+</div>
+
+<div class="card"
+id="red-day-card"
+style="display:none;">
+
+<button class="red-btn"
+onclick="toggleRedDay()">
+
+🌸 MODE RED DAY
+
+</button>
+
+<div id="redday-status"
+style="margin-top:15px;">
+</div>
+
+</div>
+
+<div class="card">
+
+<button class="absen-btn"
+onclick="toggleLokasi()">
+
+✅ ABSEN SHOLAT
+
+</button>
+
+<div id="pilihan-lokasi"
+style="display:none;margin-top:15px;">
+
+<div class="menu-flex">
+
+<button class="lokasi-btn"
+onclick="absenSholat('Rumah')">
+
+🏠 Rumah
+
+</button>
+
+<button class="lokasi-btn"
+onclick="absenSholat('Masjid')">
+
+🕌 Masjid
+
+</button>
+
+<button class="lokasi-btn"
+onclick="absenSholat('Sekolah')">
+
+🏫 Sekolah
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="menu-puasa"
+style="display:none;">
+
+<div class="card">
+
+<h2>
+🌙 Kalender Puasa Sunnah
+</h2>
+
+<div id="puasa-list">
+
+Loading...
+
+</div>
+
+</div>
+
+</div>
+
+<div id="menu-riwayat"
+style="display:none;">
+
+<div class="card">
+
+<h2>
+📜 Riwayat Absen
+</h2>
+
+<div id="riwayat-list">
+
+Belum ada riwayat...
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let nama = "Sahabat";
+let kotaSekarang = "Tangerang Selatan";
+let jadwalHariIni = {};
+let riwayat = [];
+let gender = "";
+let redDay = false;
+let nomorGuru = localStorage.getItem("nomorGuru") || "";
+let totalPoin = parseInt(localStorage.getItem("totalPoin")) || 0;
+let notifEnabled = localStorage.getItem("notifEnabled") === "true";
+
+async function mulai(){
+
+nama =
+prompt(
+"Masukkan nama:",
+"Sahabat"
+) || "Sahabat";
+
+document.getElementById(
+"salam"
+).innerHTML =
+
+"Assalamu'alaikum <b>" +
+nama +
+"</b> 🤲";
+
+document.getElementById(
+"total-poin"
+).innerText =
+totalPoin;
+
+loadRiwayat();
+
+await ambilJadwal();
+
+loadPuasa();
+
+startCountdown();
+
+if(notifEnabled){
+requestNotificationPermission();
+}
+
+autoUpdateJadwal();
+
+}
+
+function toggleNotifications(){
+
+notifEnabled = !notifEnabled;
+localStorage.setItem("notifEnabled", notifEnabled);
+
+alert(notifEnabled ? 
+"🛎️ Notifikasi diaktifkan!" : 
+"🛎️ Notifikasi dimatikan!");
+
+if(notifEnabled){
+requestNotificationPermission();
+}
+
+}
+
+function requestNotificationPermission(){
+
+if("Notification" in window && Notification.permission !== "granted"){
+Notification.requestPermission();
+}
+
+}
+
+function aturNomorGuru(){
+
+let nomor = prompt("Masukkan nomor guru:", nomorGuru);
+
+if(nomor){
+
+nomor = nomor.trim().replace(/\s/g, '').replace(/-/g, '');
+
+if(nomor.startsWith("0")){
+nomor = "62" + nomor.substring(1);
+} else if(!nomor.startsWith("62")){
+nomor = "62" + nomor;
+}
+
+nomorGuru = nomor;
+localStorage.setItem("nomorGuru", nomor);
+
+alert("✅ Nomor guru berhasil disimpan!");
+
+}
+
+}
+
+function toggleSettingMenu(){
+
+const menu =
+document.getElementById(
+"setting-menu"
+);
+
+menu.style.display =
+
+menu.style.display=="flex"
+?
+"none"
+:
+"flex";
+
+}
+
+function toggleKotaList(){
+
+const list =
+document.getElementById(
+"kota-list"
+);
+
+list.style.display =
+
+list.style.display=="flex"
+?
+"none"
+:
+"flex";
+
+}
+
+async function gantiKota(kota){
+
+kotaSekarang = kota;
+
+await ambilJadwal();
+
+loadPuasa();
+
+document.getElementById(
+"kota-list"
+).style.display="none";
+
+}
+
+function showMenu(menu){
+
+document.getElementById(
+"menu-sholat"
+).style.display="none";
+
+document.getElementById(
+"menu-puasa"
+).style.display="none";
+
+document.getElementById(
+"menu-riwayat"
+).style.display="none";
+
+document.getElementById(
+"menu-" + menu
+).style.display="block";
+
+}
+
+function setGender(g){
+
+gender = g;
+
+document.getElementById(
+"gender-card"
+).style.display="none";
+
+if(gender=="cewek"){
+
+document.getElementById(
+"red-day-card"
+).style.display="block";
+
+}
+
+}
+
+function toggleRedDay(){
+
+redDay = !redDay;
+
+if(redDay){
+
+const hariPertama =
+prompt(
+"Hari pertama haid tanggal berapa?",
+new Date().getDate()
+);
+
+const now =
+new Date();
+
+const selesai =
+new Date(
+now.getFullYear(),
+now.getMonth(),
+parseInt(hariPertama)+7
+);
+
+document.getElementById(
+"redday-status"
+).innerHTML =
+
+"🌸 Sedang Red Day<br><br>" +
+
+"📅 Hari pertama: " +
+hariPertama +
+"<br><br>" +
+
+"✅ Perkiraan selesai: " +
+
+selesai.toLocaleDateString(
+"id-ID"
+);
+
+document.querySelector(
+".absen-btn"
+).style.display="none";
+
+}else{
+
+document.getElementById(
+"redday-status"
+).innerHTML="";
+
+document.querySelector(
+".absen-btn"
+).style.display="block";
+
+}
+
+}
+
+async function ambilJadwal(){
+
+let kota = kotaSekarang;
+
+if(kota=="Tangerang Selatan"){
+kota="South Tangerang";
+}
+
+try{
+
+const response =
+await fetch(
+
+"https://api.aladhan.com/v1/timingsByCity?city=" +
+encodeURIComponent(kota) +
+"&country=Indonesia&method=20"
+
+);
+
+const data =
+await response.json();
+
+const t =
+data.data.timings;
+
+jadwalHariIni = {
+
+Subuh:t.Fajr.split(" ")[0],
+Dzuhur:t.Dhuhr.split(" ")[0],
+Asar:t.Asr.split(" ")[0],
+Maghrib:t.Maghrib.split(" ")[0],
+Isya:t.Isha.split(" ")[0]
+
+};
+
+updateJadwal();
+
+}catch(err){
+
+console.log(err);
+
+}
+
+}
+
+function updateJadwal(){
+
+document.getElementById(
+"kota-title"
+).innerText =
+kotaSekarang;
+
+let html = "";
+
+for(let sholat in jadwalHariIni){
+
+html +=
+
+'<div class="waktu">' +
+
+'<span>' +
+sholat +
+'</span>' +
+
+'<span>' +
+jadwalHariIni[sholat] +
+'</span>' +
+
+'</div>';
+
+}
+
+document.getElementById(
+"jadwal-list"
+).innerHTML =
+html;
+
+}
+
+function autoUpdateJadwal(){
+
+setInterval(async () => {
+
+const sekarang = new Date();
+
+if(sekarang.getHours() === 0 && sekarang.getMinutes() <= 10){
+
+await ambilJadwal();
+
+loadPuasa();
+
+}
+
+}, 300000);
+
+}
+
+function startCountdown(){
+
+setInterval(()=>{
+
+const now = new Date();
+
+let next = null;
+
+let minDiff = Infinity;
+
+for(let sholat in jadwalHariIni){
+
+let split =
+jadwalHariIni[sholat]
+.split(":");
+
+let waktu =
+new Date();
+
+waktu.setHours(
+parseInt(split[0])
+);
+
+waktu.setMinutes(
+parseInt(split[1])
+);
+
+waktu.setSeconds(0);
+
+if(waktu < now){
+
+waktu.setDate(
+waktu.getDate()+1
+);
+
+}
+
+let diff =
+waktu - now;
+
+if(diff < minDiff){
+
+minDiff = diff;
+next = sholat;
+
+}
+
+}
+
+if(next){
+
+const jam =
+Math.floor(
+minDiff/(1000*60*60)
+);
+
+const menit =
+Math.floor(
+(minDiff%(1000*60*60))
+/
+(1000*60)
+);
+
+const detik =
+Math.floor(
+(minDiff%(1000*60))
+/
+1000
+);
+
+document.getElementById(
+"countdown"
+).innerText =
+
+"🕌 Menuju " +
+next +
+": " +
+
+jam + " jam " +
+
+menit + " menit " +
+
+detik + " detik";
+
+}
+
+},1000);
+
+}
+
+function toggleLokasi(){
+
+const menu =
+document.getElementById(
+"pilihan-lokasi"
+);
+
+menu.style.display =
+
+menu.style.display=="none"
+?
+"block"
+:
+"none";
+
+}
+
+function absenSholat(lokasi){
+
+const now = new Date();
+
+const tanggal =
+now.toLocaleDateString(
+"id-ID"
+);
+
+const jam =
+String(now.getHours())
+.padStart(2,"0")
++
+":" +
+String(now.getMinutes())
+.padStart(2,"0");
+
+let sholat = "Isya";
+
+function menit(w){
+
+const s = w.split(":");
+
+return (
+parseInt(s[0])*60 +
+parseInt(s[1])
+);
+
+}
+
+const nowMenit =
+now.getHours()*60 +
+now.getMinutes();
+
+if(
+nowMenit >= menit(jadwalHariIni.Subuh)
+&&
+nowMenit < menit(jadwalHariIni.Dzuhur)
+){
+sholat="Subuh";
+}
+
+else if(
+nowMenit >= menit(jadwalHariIni.Dzuhur)
+&&
+nowMenit < menit(jadwalHariIni.Asar)
+){
+sholat="Dzuhur";
+}
+
+else if(
+nowMenit >= menit(jadwalHariIni.Asar)
+&&
+nowMenit < menit(jadwalHariIni.Maghrib)
+){
+sholat="Asar";
+}
+
+else if(
+nowMenit >= menit(jadwalHariIni.Maghrib)
+&&
+nowMenit < menit(jadwalHariIni.Isya)
+){
+sholat="Maghrib";
+}
+
+let poin = 5;
+
+if(
+lokasi=="Masjid" ||
+lokasi=="Sekolah"
+){
+poin = 10;
+}
+
+totalPoin += poin;
+
+localStorage.setItem(
+"totalPoin",
+totalPoin
+);
+
+document.getElementById(
+"total-poin"
+).innerText =
+totalPoin;
+
+riwayat.unshift({
+
+tanggal,
+jam,
+lokasi,
+sholat
+
+});
+
+localStorage.setItem(
+"riwayatSholat",
+JSON.stringify(riwayat)
+);
+
+loadRiwayat();
+
+alert(
+"✅ Absen berhasil!");
+
+if(nomorGuru){
+
+if(confirm("Kirim laporan ke guru via WhatsApp?")){
+
+const teks = 
+
+"Assalamu'alaikum%0A%0A" +
+"Saya%20" + encodeURIComponent(nama) + "%20telah%20selesai%20sholat%20" + sholat + "%0A" +
+"Pukul%3A%20" + jam + "%0A" +
+"Lokasi%3A%20" + lokasi + "%0A%0A" +
+"Semoga%20Allah%20menerima%20ibadah%20kita.%20🤲";
+
+window.open("https://wa.me/" + nomorGuru + "?text=" + teks, "_blank");
+
+}
+
+}
+
+}
+
+function loadRiwayat(){
+
+riwayat =
+JSON.parse(
+localStorage.getItem(
+"riwayatSholat"
+)
+) || [];
+
+let html = "";
+
+riwayat.forEach(r=>{
+
+html +=
+
+'<div style="margin-bottom:15px;">' +
+
+'📅 ' + r.tanggal + '<br>' +
+
+'🕌 ' + r.sholat + '<br>' +
+
+'📍 ' + r.lokasi + '<br>' +
+
+'🕒 ' + r.jam +
+
+'</div><hr>';
+
+});
+
+document.getElementById(
+"riwayat-list"
+).innerHTML =
+
+html ||
+"Belum ada riwayat...";
+
+}
+
+function loadPuasa(){
+
+const sekarang =
+new Date();
+
+const tahun =
+sekarang.getFullYear();
+
+const bulan =
+sekarang.getMonth();
+
+const puasa = [];
+
+function tambah(
+tanggal,
+nama
+){
+
+puasa.push({
+tanggal,
+nama
+});
+
+}
+
+for(let i=1;i<=31;i++){
+
+const t =
+new Date(
+tahun,
+bulan,
+i
+);
+
+if(
+t.getMonth()!=bulan
+){
+break;
+}
+
+if(
+t.getDay()==1
+){
+
+tambah(
+t,
+"Puasa Senin"
+);
+
+}
+
+if(
+t.getDay()==4
+){
+
+tambah(
+t,
+"Puasa Kamis"
+);
+
+}
+
+}
+
+tambah(
+new Date(tahun,bulan,13),
+"Puasa Ayyamul Bidh"
+);
+
+tambah(
+new Date(tahun,bulan,14),
+"Puasa Ayyamul Bidh"
+);
+
+tambah(
+new Date(tahun,bulan,15),
+"Puasa Ayyamul Bidh"
+);
+
+tambah(
+new Date(2026,4,25),
+"Puasa Tarwiyah"
+);
+
+tambah(
+new Date(2026,4,26),
+"Puasa Arafah"
+);
+
+tambah(
+new Date(2026,5,24),
+"Puasa Tasu'a"
+);
+
+tambah(
+new Date(2026,5,25),
+"Puasa Asyura"
+);
+
+puasa.sort(
+(a,b)=>
+a.tanggal-b.tanggal
+);
+
+let html = "";
+
+puasa.forEach(item=>{
+
+const tanggal =
+
+item.tanggal
+.toLocaleDateString(
+
+"id-ID",
+
+{
+weekday:"long",
+day:"numeric",
+month:"long",
+year:"numeric"
+}
+
+);
+
+html +=
+
+'<div class="puasa-item">' +
+
+'<b>🌙 ' +
+item.nama +
+'</b><br><br>' +
+
+'📅 ' +
+tanggal +
+'<br><br>' +
+
+'🍽️ Buka Puasa: ' +
+(jadwalHariIni.Maghrib || "-") +
+
+'</div>';
+
+});
+
+document.getElementById(
+"puasa-list"
+).innerHTML =
+html;
+
+}
+
+window.onload = function(){
+    mulai();
+    autoUpdateJadwal();
+};
+</script>
+
+</body>
+</html>
